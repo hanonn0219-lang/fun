@@ -1,3 +1,4 @@
+// api/v1/health.js
 export const config = { runtime: 'edge' };
 
 export default async function handler() {
