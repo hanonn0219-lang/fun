@@ -1,5 +1,5 @@
-// api/v1/files.pdf.js
-export const config = { runtime: 'nodejs' };  // ← 'nodejs20.x' ではなく 'nodejs'
+// api/v1/files.pdf.js  ← これでOK
+export const config = { runtime: 'nodejs' };
 
 import PDFDocument from 'pdfkit';
 import { fromB64 } from '../_utils.js';
