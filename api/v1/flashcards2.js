@@ -27,7 +27,7 @@ export default async function handler(req) {
   const token = b64urlEncode({ items, ts: Date.now() });
   const origin = new URL(req.url).origin;
 
-  // ← 短い中継リンクで返す
+  // 短いリンクを返す
   const csvUrl = `${origin}/api/v1/u?t=csv&d=${token}`;
   const pdfUrl = null;
 
