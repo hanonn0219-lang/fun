@@ -1,3 +1,5 @@
-export default function handler(req, res) {
-  res.status(200).send('hello from vercel');
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  return new Response('hello from vercel (edge)');
 }
