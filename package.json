@@ -1,0 +1,9 @@
+{
+  "name": "meb-actions",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pdfkit": "0.15.0"
+  }
+}
