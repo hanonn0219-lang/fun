@@ -1,3 +1,4 @@
+// api/_utils.js  ← Node/Edge両方で動く純JS
 export function toB64(obj) {
   return encodeURIComponent(Buffer.from(JSON.stringify(obj)).toString('base64'));
 }
