@@ -32,4 +32,5 @@ const pdfUrl = null; // PDFをあとで追加する時はここも /u?t=pdf に�
 return new Response(JSON.stringify({ csv_url: csvUrl, pdf_url: pdfUrl }), {
   headers: { 'Content-Type': 'application/json', ...CORS }
 });
+}
 
