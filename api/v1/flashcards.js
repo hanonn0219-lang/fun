@@ -26,11 +26,8 @@ export default async function handler(req) {
 
   const token = b64urlEncode({ items, ts: Date.now() });
   const origin = new URL(req.url).origin;
-  const csvUrl = `${origin}/api/v1/u?t=csv&d=${token}`;
-const pdfUrl = null; // PDFをあとで追加する時はここも /u?t=pdf にする
-
+const csvUrl = `${origin}/api/v1/u?t=csv&d=${token}`;
+const pdfUrl = null; // あとでPDFを入れるときは /u?t=pdf&d=... に
 return new Response(JSON.stringify({ csv_url: csvUrl, pdf_url: pdfUrl }), {
   headers: { 'Content-Type': 'application/json', ...CORS }
 });
-}
-
