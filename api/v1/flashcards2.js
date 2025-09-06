@@ -1,13 +1,10 @@
-// api/v1/flashcards2.js
 import { b64urlEncode } from '../_utils.js';
 export const config = { runtime: 'edge' };
-
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'Content-Type, X-API-Key',
   'Access-Control-Allow-Methods': 'POST, OPTIONS'
 };
-
 export default async function handler(req) {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405, headers: CORS });
@@ -28,8 +25,8 @@ export default async function handler(req) {
   const token = b64urlEncode({ items, ts: Date.now(), via: 'flashcards2-direct' });
   const origin = new URL(req.url).origin;
 
-  // ★ 最初から「直リンク」を返す
-  const csvUrl = `${origin}/api/v1/files.csv?d=${token}`;
+  // 直リンク (/api/v1/f/<token>) を返す
+  const csvUrl = `${origin}/api/v1/f/${token}`;
 
   return new Response(JSON.stringify({ csv_url: csvUrl, pdf_url: null, endpoint: 'flashcards2' }), {
     headers: { 'Content-Type': 'application/json', ...CORS }
