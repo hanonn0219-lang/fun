@@ -16,9 +16,11 @@ function toCsv(items) {
 }
 
 export default async function handler(req) {
+  // /api/v1/f/<d> の <d> を取り出す
   const url = new URL(req.url);
   const segs = url.pathname.split('/');
-  const d = segs[segs.length - 1]; // /api/v1/f/<d> の <d>
+  const d = segs[segs.length - 1];
+
   if (!d) return new Response('Missing token', { status: 400 });
 
   let payload;
