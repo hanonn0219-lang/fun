@@ -13,7 +13,7 @@ export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method Not Allowed', { status: 405, headers: CORS });
 
   const key = req.headers.get('x-api-key') || '';
-  const expected = process.env.LEARNINGOPS_API_KEY || 'meb-12345'; // 応急処置
+  const expected = process.env.LEARNINGOPS_API_KEY || 'meb-12345'; // 応急処置OK
   if (!expected || key !== expected) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401, headers: { 'Content-Type': 'application/json', ...CORS }
@@ -28,7 +28,7 @@ export default async function handler(req) {
   const token = b64urlEncode({ items, ts: Date.now() });
   const origin = new URL(req.url).origin;
 
-  // ★ 短縮リンクではなく「直リンク」を返す
+  // ★ 直リンクで返す（/u をやめる）
   const csvUrl = `${origin}/api/v1/files.csv?d=${token}`;
   const pdfUrl = null;
 
