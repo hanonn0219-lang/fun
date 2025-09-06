@@ -16,16 +16,13 @@ function toCsv(items) {
 }
 
 export default async function handler(req) {
-  // /api/v1/f/<d> の <d> を取り出す
   const url = new URL(req.url);
   const segs = url.pathname.split('/');
-  const d = segs[segs.length - 1]; // 最後のセグメント
-
+  const d = segs[segs.length - 1]; // /api/v1/f/<d> の <d>
   if (!d) return new Response('Missing token', { status: 400 });
 
   let payload;
-  try { payload = b64urlDecode(d); }
-  catch { return new Response('Bad token', { status: 400 }); }
+  try { payload = b64urlDecode(d); } catch { return new Response('Bad token', { status: 400 }); }
 
   const items = Array.isArray(payload.items) ? payload.items : [];
   if (!items.length) return new Response('No items', { status: 400 });
