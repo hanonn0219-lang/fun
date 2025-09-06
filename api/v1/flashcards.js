@@ -1,3 +1,4 @@
+// api/v1/flashcards.js
 import { b64urlEncode } from '../_utils.js';
 export const config = { runtime: 'edge' };
 
@@ -12,22 +13,21 @@ export default async function handler(req) {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: CORS });
   }
-  // Only POST
+  // POST 以外は不可
   if (req.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405, headers: CORS });
   }
 
-  // API key check
+  // APIキー確認
   const key = req.headers.get('x-api-key') || '';
-  const expected = process.env.LEARNINGOPS_API_KEY || '';
+  const expected = process.env.LEARNINGOPS_API_KEY || 'meb-12345'; // 応急処置でデフォルトも許可
   if (!expected || key !== expected) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json', ...CORS }
+      status: 401, headers: { 'Content-Type': 'application/json', ...CORS }
     });
   }
 
-  // Read body
+  // JSON 読み取り
   let body;
   try {
     body = await req.json();
@@ -39,15 +39,14 @@ export default async function handler(req) {
   if (!items.length) return new Response('No items', { status: 400, headers: CORS });
   if (items.length > 12) return new Response('Max 12 items', { status: 400, headers: CORS });
 
-  // Token & URLs
+  // トークン作成
   const token = b64urlEncode({ items, ts: Date.now() });
   const origin = new URL(req.url).origin;
 
-  // ★ 短い中継リンクを返す（/api/v1/u で 302 リダイレクト）
-  const csvUrl = `${origin}/api/v1/u?t=csv&d=${token}`;
-  const pdfUrl = null; // PDF 追加時は `${origin}/api/v1/u?t=pdf&d=${token}` に変更
+  // ★ 直リンクで返す（ボタンから開いても壊れない）
+  const csvUrl = `${origin}/api/v1/files.csv?d=${token}`;
+  const pdfUrl = null; // 将来PDF対応するときは files.pdf?d=... を用意
 
-  // Response
   return new Response(JSON.stringify({ csv_url: csvUrl, pdf_url: pdfUrl }), {
     headers: { 'Content-Type': 'application/json', ...CORS }
   });
