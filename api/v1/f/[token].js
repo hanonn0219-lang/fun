@@ -1,27 +1,37 @@
-import { b64urlDecode } from '../../_utils.js';
+// api/v1/f/[token].js
+import { b64urlDecode, csvEscape } from '../../_utils.js';
 export const config = { runtime: 'edge' };
 
 export default async function handler(req) {
-  const token = req.url.split('/').pop(); // URLの末尾をトークンとして読む
+  // URLからtokenだけを安全に取り出す
+  const url = new URL(req.url);
+  const token = url.pathname.split('/').pop();
+
   let payload;
   try {
     payload = b64urlDecode(token);
   } catch {
-    return new Response('Bad token', { status: 400 });
+    return new Response(JSON.stringify({ error: 'Bad token' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  const items = payload.items || [];
+  const items = Array.isArray(payload?.items) ? payload.items : [];
   if (!items.length) {
-    return new Response('No data', { status: 400 });
+    return new Response(JSON.stringify({ error: 'No data' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  const header = `"English","Japanese"\n`;
-  const rows = items.map(it => `"${it.english}","${it.japanese}"`).join('\n');
-  const csv = header + rows;
+  // CSV作成
+  const rows = [['English', 'Japanese'], ...items.map(i => [i.english, i.japanese])];
+  const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n');
 
   return new Response(csv, {
     headers: {
-      'Content-Type': 'text/csv',
+      'Content-Type': 'text/csv; charset=utf-8',
       'Content-Disposition': 'attachment; filename="flashcards.csv"'
     }
   });
